@@ -1,23 +1,17 @@
-variable "project" {
+variable "project_name" {
     default = "roboshop"
 }
-
 variable "environment" {
     default = "dev"
 }
-
 variable "zone_id" {
     default = "Z012785114HGZTDQ8KSQH"
 }
-
-variable "zone_name" {
+variable "domain_name" {
     default = "lithesh.shop"
 }
-
 variable "component" {
-
 }
-
 variable "rule_priority" {
     
 }

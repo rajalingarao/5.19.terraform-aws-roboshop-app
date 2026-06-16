@@ -7,7 +7,7 @@ locals {
     backend_alb_listener_arn = data.aws_ssm_parameter.backend_alb_listener_arn.value
     frontend_alb_listener_arn = data.aws_ssm_parameter.frontend_alb_listener_arn.value
 
-    ami_id = data.aws_ami.joindevops.id
+    ami_id = data.aws_ami.ami_info.id
     sg_id = data.aws_ssm_parameter.sg_id.value
 
     alb_listener_arn = "${var.component}" == "frontend" ? local.frontend_alb_listener_arn : local.backend_alb_listener_arn
@@ -15,10 +15,11 @@ locals {
     tg_port = "${var.component}" == "frontend" ? 80 : 8080
     health_check_path = "${var.component}" == "frontend" ? "/" : "/health"
 
-    rule_header_url = "${var.component}" == "frontend" ? "${var.environment}.${var.zone_name}" : "${var.component}.backend-${var.environment}.${var.zone_name}"
+    rule_header_url = "${var.component}" == "frontend" ? "${var.environment}.${var.domain_name}" : "${var.component}.backend-${var.environment}.${var.domain_name}"
+    host_context ="${var.component}" == "frontend" ? "${var.project_name}-${var.environment}.${var.domain_name}" : "${var.component}.backend-alb-${var.environment}.${var.domain_name}"
 
     common_tags = {
-        Project = var.project
+        Project = var.project_name
         Environment = var.environment
         Terraform = "true"
     }

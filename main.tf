@@ -1,5 +1,5 @@
 resource "aws_lb_target_group" "main" {
-  name     = "${var.project}-${var.environment}-${var.component}" #roboshop-dev-${var.component}
+  name     = "${var.project_name}-${var.environment}-${var.component}" #roboshop-dev-${var.component}
   port     = local.tg_port
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -24,7 +24,7 @@ resource "aws_instance" "main" {
   tags = merge(
     local.common_tags,
     {
-        Name = "${var.project}-${var.environment}-${var.component}"
+        Name = "${var.project_name}-${var.environment}-${var.component}"
     }
   )
 }
@@ -61,13 +61,13 @@ resource "aws_ec2_instance_state" "main" {
 }
 
 resource "aws_ami_from_instance" "main" {
-  name               = "${var.project}-${var.environment}-${var.component}"
+  name               = "${var.project_name}-${var.environment}-${var.component}"
   source_instance_id = aws_instance.main.id
   depends_on = [aws_ec2_instance_state.main]
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.project}-${var.environment}-${var.component}"
+      Name = "${var.project_name}-${var.environment}-${var.component}"
     }
   )
 }
@@ -86,7 +86,7 @@ resource "terraform_data" "main_delete" {
 }
 
 resource "aws_launch_template" "main" {
-  name = "${var.project}-${var.environment}-${var.component}"
+  name = "${var.project_name}-${var.environment}-${var.component}"
 
   image_id = aws_ami_from_instance.main.id
   instance_initiated_shutdown_behavior = "terminate"
@@ -99,7 +99,7 @@ resource "aws_launch_template" "main" {
     tags = merge(
       local.common_tags,
       {
-        Name = "${var.project}-${var.environment}-${var.component}"
+        Name = "${var.project_name}-${var.environment}-${var.component}"
       }
     )
   }
@@ -111,7 +111,7 @@ resource "aws_launch_template" "main" {
     tags = merge(
       local.common_tags,
       {
-        Name = "${var.project}-${var.environment}-${var.component}"
+        Name = "${var.project_name}-${var.environment}-${var.component}"
       }
     )
   }
@@ -120,14 +120,14 @@ resource "aws_launch_template" "main" {
   tags = merge(
       local.common_tags,
       {
-        Name = "${var.project}-${var.environment}-${var.component}"
+        Name = "${var.project_name}-${var.environment}-${var.component}"
       }
   )
 
 }
 
 resource "aws_autoscaling_group" "main" {
-  name                 = "${var.project}-${var.environment}-${var.component}"
+  name                 = "${var.project_name}-${var.environment}-${var.component}"
   desired_capacity   = 1
   max_size           = 10
   min_size           = 1
@@ -145,7 +145,7 @@ resource "aws_autoscaling_group" "main" {
     for_each = merge(
       local.common_tags,
       {
-        Name = "${var.project}-${var.environment}-${var.component}"
+        Name = "${var.project_name}-${var.environment}-${var.component}"
       }
     )
     content{
@@ -170,7 +170,7 @@ resource "aws_autoscaling_group" "main" {
 }
 
 resource "aws_autoscaling_policy" "main" {
-  name                   = "${var.project}-${var.environment}-${var.component}"
+  name                   = "${var.project_name}-${var.environment}-${var.component}"
   autoscaling_group_name = aws_autoscaling_group.main.name
   policy_type            = "TargetTrackingScaling"
   target_tracking_configuration {
